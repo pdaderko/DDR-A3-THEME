@@ -143,17 +143,17 @@ for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 		OnCommand=function(s)
 			if GAMESTATE:IsPlayerEnabled(pn) then
 				local PlayerUID = PROFILEMAN:GetProfile(pn):GetGUID();
-				if ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="OpenPanes1" then
-					s:addx(pn==PLAYER_1 and -500 or 500):sleep(0.5):decelerate(0.5):addx(pn==PLAYER_1 and 500 or -500)
-					s:linear(0.5);
-					s:diffusealpha(1);
-				elseif ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="OpenPanes3" or ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="ClosePanes" then
-					s:diffusealpha(0);
-				elseif ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="OpenPanes2" then
-					if GAMESTATE:IsCourseMode() == false then
-						s:diffusealpha(0);
-					end
-				end;
+				--if ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="OpenPanes1" then
+				s:addx(pn==PLAYER_1 and -500 or 500):sleep(0.5):decelerate(0.5):addx(pn==PLAYER_1 and 500 or -500)
+				s:linear(0.5);
+				s:diffusealpha(1);
+				--elseif ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="OpenPanes3" or ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="ClosePanes" then
+				--	s:diffusealpha(0);
+				--elseif ReadOrCreatePaneControlForPlayerSide(PlayerUID)=="OpenPanes2" then
+				--	if GAMESTATE:IsCourseMode() == false then
+				--		s:diffusealpha(0);
+				--	end
+				--end;
 			end;
 		end,
 		CodeMessageCommand=function(self,params)
@@ -200,6 +200,6 @@ end
 return Def.ActorFrame{
 	OffCommand=function(s) s:finishtweening() end,
 	detail;
-	score;
-	NoPane;
+	--score;
+	--NoPane;
 }
