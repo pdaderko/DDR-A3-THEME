@@ -1,6 +1,11 @@
 local pn = ...;
 local t = Def.ActorFrame {};
-local CaloriesToday = PROFILEMAN:GetProfile(pn):GetCaloriesBurnedToday();
+local CaloriesToday
+if PROFILEMAN:IsPersistentProfile(pn) then
+	CaloriesToday = PROFILEMAN:GetProfile(pn):GetCaloriesBurnedToday();
+else
+	CaloriesToday = PROFILEMAN:GetMachineProfile():GetCaloriesBurnedToday();
+end
 
 local CaloriesPercent;
 	if CaloriesToday >= 0 and CaloriesToday <= 5 then
