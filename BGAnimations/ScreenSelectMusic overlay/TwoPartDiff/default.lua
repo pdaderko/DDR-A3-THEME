@@ -166,50 +166,77 @@ local function genScrollerFrame(player)
 						local steps = song:GetOneSteps(st,diff)
 						local scorelist = profile:GetHighScoreList(song,steps)
 						local scores = scorelist:GetHighScores()
-						local topscore;
-						if scores[1] then
-							topscore = scores[1];
-							assert(topscore);
-							local misses = topscore:GetTapNoteScore("TapNoteScore_Miss")
-									  +topscore:GetTapNoteScore("TapNoteScore_CheckpointMiss")
-									  +topscore:GetTapNoteScore("TapNoteScore_HitMine")
-									  +topscore:GetTapNoteScore("TapNoteScore_W5")
-							local goods = topscore:GetTapNoteScore("TapNoteScore_W4")
-							local greats = topscore:GetTapNoteScore("TapNoteScore_W3")
-							local perfects = topscore:GetTapNoteScore("TapNoteScore_W2")
-							local marvelous = topscore:GetTapNoteScore("TapNoteScore_W1")
-							local hasUsedBattery = string.find(topscore:GetModifiers(),"Lives")
-							if (misses) == 0 and scores[1]:GetScore() > 0 and (marvelous+perfects)>0 then
-								if (greats+perfects) == 0 then
-									s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","MarvelousFC"))
-									s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
-								elseif greats == 0 then
-									s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","PerfectFC"))
-									s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
-								elseif (misses+goods) == 0 then
-									s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","GreatFC"))
-									s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
-								elseif (misses) == 0 then
-									s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","GoodFC"))
-									s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
-								end
-								s:visible(true)
-							else
-								if topscore:GetGrade() ~= 'Grade_Failed' then
-									if hasUsedBattery then
-										s:visible(true)
-										s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","Risky"))
-									else
-										s:visible(true)
-										s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","LifeBar"))
+						local currscore;
+						local bestmark=0
+						s:visible(false) --default no lamp
+						for i=1, #scores do --loop over all scores, updating the lamp corresponding to the best mark (not always highest score)
+							if scores[1] then
+								currscore = scores[1];
+								assert(currscore);
+								local misses = currscore:GetTapNoteScore("TapNoteScore_Miss")
+									  +currscore:GetTapNoteScore("TapNoteScore_CheckpointMiss")
+									  +currscore:GetTapNoteScore("TapNoteScore_HitMine")
+									  +currscore:GetTapNoteScore("TapNoteScore_W5")
+									  +currscore:GetHoldNoteScore("HoldNoteScore_MissedHold")
+									  +currscore:GetHoldNoteScore("HoldNoteScore_LetGo")
+								local goods = currscore:GetTapNoteScore("TapNoteScore_W4")
+								local greats = currscore:GetTapNoteScore("TapNoteScore_W3")
+								local perfects = currscore:GetTapNoteScore("TapNoteScore_W2")
+								local marvelous = currscore:GetTapNoteScore("TapNoteScore_W1")
+								local hasUsedBattery = string.find(currscore:GetModifiers(),"Lives")
+								if (misses) == 0 and scores[1]:GetScore() > 0 and (marvelous+perfects)>0 then
+									if (greats+perfects) == 0 then
+										if bestmark<7 then
+											bestmark=7
+											s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","MarvelousFC"))
+											s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
+										end
+									elseif greats == 0 then
+										if bestmark<6 then
+											bestmark=6
+											s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","PerfectFC"))
+											s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
+										end
+									elseif (misses+goods) == 0 then
+										if bestmark<5 then
+											bestmark=5
+											s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","GreatFC"))
+											s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
+										end
+									elseif (misses) == 0 then
+										if bestmark<4 then
+											bestmark=4
+											s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","GoodFC"))
+											s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("1,1,1,0.7")):effectperiod(0.09)
+										end
 									end
-								else
 									s:visible(true)
-									s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","Failed"))
+								else
+									if currscore:GetGrade() ~= 'Grade_Failed' then
+										if hasUsedBattery then
+											if bestmark<3 then
+												bestmark=3
+												s:visible(true)
+												s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","Risky"))
+											end
+										else
+											if bestmark<2 then
+												bestmark=2
+												s:visible(true)
+												s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","LifeBar"))
+											end
+										end
+									else
+										if bestmark<1 then
+											bestmark=1
+											s:visible(true)
+											s:Load(THEME:GetPathB("ScreenSelectMusic overlay/TwoPartDiff/Cleared","Failed"))
+										end
+									end
 								end
+							else
+								s:visible(false)
 							end
-						else
-							s:visible(false)
 						end
 					end
 				};
@@ -265,30 +292,32 @@ local keyset={0,0}
 
 local function DiffInputHandler(event)
 	local pn= event.PlayerNumber
-	local button = event.button
-	if event.type == "InputEventType_Release" then return end
-	--SOUND:PlayOnce(THEME:GetPathS("_MusicWheel","Change"),true)
-	if (button == "MenuUp" or button == "MenuLeft") and selection[pn] > 1 and GAMESTATE:IsPlayerEnabled(pn) and keyset[pn] ~= 1 then
-		SOUND:PlayOnce(THEME:GetPathS("","ScreenSelectMusic difficulty harder"));
-		selection[pn] = selection[pn] - 1
-		GAMESTATE:SetCurrentSteps(pn,songSteps[selection[pn]])
-		GAMESTATE:SetPreferredDifficulty(pn,songSteps[selection[pn]]:GetDifficulty())
-		adjustScrollerFrame(pn)
-		MESSAGEMAN:Broadcast("TwoDiffLeft"..pn)
-		return false;
-	elseif (button == "MenuDown" or button == "MenuRight") and selection[pn] < numDiffs and GAMESTATE:IsPlayerEnabled(pn) and keyset[pn] ~= 1 then
-		SOUND:PlayOnce(THEME:GetPathS("","ScreenSelectMusic difficulty harder"));
-		selection[pn] = selection[pn] + 1
-		GAMESTATE:SetCurrentSteps(pn,songSteps[selection[pn]])
-		GAMESTATE:SetPreferredDifficulty(pn,songSteps[selection[pn]]:GetDifficulty())
-		MESSAGEMAN:Broadcast("TwoDiffRight"..pn)
-		adjustScrollerFrame(pn)
-		return true;
-	elseif (button == "Start") and GAMESTATE:IsPlayerEnabled(pn) then
-		keyset[pn] = 1
-		MESSAGEMAN:Broadcast("OK"..pn)
-	else
-	end;
+	local button = event.GameButton
+	if event.type == "InputEventType_Release" or event.type == "InputEventType_Repeat" then return
+	elseif event.type == "InputEventType_FirstPress" then
+		--SOUND:PlayOnce(THEME:GetPathS("_MusicWheel","Change"),true)
+		if (button == "MenuUp" or button == "MenuLeft") and selection[pn] > 1 and GAMESTATE:IsPlayerEnabled(pn) and keyset[pn] ~= 1 then
+			SOUND:PlayOnce(THEME:GetPathS("","ScreenSelectMusic difficulty harder"));
+			selection[pn] = selection[pn] - 1
+			GAMESTATE:SetCurrentSteps(pn,songSteps[selection[pn]])
+			GAMESTATE:SetPreferredDifficulty(pn,songSteps[selection[pn]]:GetDifficulty())
+			adjustScrollerFrame(pn)
+			MESSAGEMAN:Broadcast("TwoDiffLeft"..pn)
+			return false;
+		elseif (button == "MenuDown" or button == "MenuRight") and selection[pn] < numDiffs and GAMESTATE:IsPlayerEnabled(pn) and keyset[pn] ~= 1 then
+			SOUND:PlayOnce(THEME:GetPathS("","ScreenSelectMusic difficulty harder"));
+			selection[pn] = selection[pn] + 1
+			GAMESTATE:SetCurrentSteps(pn,songSteps[selection[pn]])
+			GAMESTATE:SetPreferredDifficulty(pn,songSteps[selection[pn]]:GetDifficulty())
+			MESSAGEMAN:Broadcast("TwoDiffRight"..pn)
+			adjustScrollerFrame(pn)
+			return true;
+		elseif (button == "Start") and GAMESTATE:IsPlayerEnabled(pn) then
+			keyset[pn] = 1
+			MESSAGEMAN:Broadcast("OK"..pn)
+		else
+		end;
+	end
 end;
 
 local t = Def.ActorFrame{
