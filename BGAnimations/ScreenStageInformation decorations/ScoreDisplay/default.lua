@@ -57,7 +57,7 @@ function StageTopRecord(pn) --�^�ǳ̰��������Ӭ���
 			myScoreSet["topW3"]  = scores[1]:GetTapNoteScore("TapNoteScore_W3");
 			myScoreSet["topW4"]  = scores[1]:GetTapNoteScore("TapNoteScore_W4");
 			myScoreSet["topW5"]  = scores[1]:GetTapNoteScore("TapNoteScore_W5");
-			myScoreSet["topMiss"]  = scores[1]:GetTapNoteScore("TapNoteScore_W5")+scores[1]:GetTapNoteScore("TapNoteScore_Miss");
+			myScoreSet["topMiss"]  = scores[1]:GetTapNoteScore("TapNoteScore_W5")+scores[1]:GetTapNoteScore("TapNoteScore_Miss")+scores[1]:GetHoldNoteScore("HoldNoteScore_MissedHold")+scores[1]:GetHoldNoteScore("HoldNoteScore_LetGo");
 			myScoreSet["topOK"]  = scores[1]:GetHoldNoteScore("HoldNoteScore_Held");
 			--myScoreSet["topEXScore"]  = scores[1]:GetTapNoteScore("TapNoteScore_W1")*3+scores[1]:GetTapNoteScore("TapNoteScore_W2")*2+scores[1]:GetTapNoteScore("TapNoteScore_W3")+scores[1]:GetHoldNoteScore("HoldNoteScore_Held")*3;
 			if (StepsOrTrail:GetRadarValues( pn ):GetValue( "RadarCategory_TapsAndHolds" ) >=0) then --If it is not a random course
@@ -171,6 +171,8 @@ t[#t+1]=Def.ActorFrame{
 									  +topscore:GetTapNoteScore("TapNoteScore_CheckpointMiss")
 									  +topscore:GetTapNoteScore("TapNoteScore_HitMine")
 									  +topscore:GetTapNoteScore("TapNoteScore_W5")
+									  +topscore:GetHoldNoteScore("HoldNoteScore_MissedHold")
+									  +topscore:GetHoldNoteScore("HoldNoteScore_LetGo")
 						local goods = topscore:GetTapNoteScore("TapNoteScore_W4")
 						local greats = topscore:GetTapNoteScore("TapNoteScore_W3")
 						local perfects = topscore:GetTapNoteScore("TapNoteScore_W2")
