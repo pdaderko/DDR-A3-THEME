@@ -170,8 +170,8 @@ local function genScrollerFrame(player)
 						local bestmark=0
 						s:visible(false) --default no lamp
 						for i=1, #scores do --loop over all scores, updating the lamp corresponding to the best mark (not always highest score)
-							if scores[1] then
-								currscore = scores[1];
+							if scores[i] then
+								currscore = scores[i];
 								assert(currscore);
 								local misses = currscore:GetTapNoteScore("TapNoteScore_Miss")
 									  +currscore:GetTapNoteScore("TapNoteScore_CheckpointMiss")
@@ -184,7 +184,7 @@ local function genScrollerFrame(player)
 								local perfects = currscore:GetTapNoteScore("TapNoteScore_W2")
 								local marvelous = currscore:GetTapNoteScore("TapNoteScore_W1")
 								local hasUsedBattery = string.find(currscore:GetModifiers(),"Lives")
-								if (misses) == 0 and scores[1]:GetScore() > 0 and (marvelous+perfects)>0 then
+								if (misses) == 0 and scores[i]:GetScore() > 0 and (marvelous+perfects)>0 then
 									if (greats+perfects) == 0 then
 										if bestmark<7 then
 											bestmark=7
